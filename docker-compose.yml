@@ -1,0 +1,31 @@
+
+services:
+  # 1. Backend Service
+  api:
+    build: ./backend
+    container_name: flappy-backend
+    restart: always
+    ports:
+      - "8000:8000"
+    networks:
+      - game-network
+
+  # 2. Frontend Service
+  web:
+    build: ./frontend
+    container_name: flappy-frontend
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      # Nếu sau này em gọi API backend, dùng URL này
+      - NEXT_PUBLIC_API_URL=http://localhost:8000
+    depends_on:
+      - api
+    networks:
+      - game-network
+
+# Mạng riêng để các container nói chuyện với nhau
+networks:
+  game-network:
+    driver: bridge
