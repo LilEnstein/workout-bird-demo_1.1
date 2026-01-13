@@ -147,19 +147,34 @@ const MotionSensor: React.FC<MotionSensorProps> = ({ onJump, onDive }) => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isModelLoaded]); // Chỉ chạy 1 lần khi model load xong -> HẾT NHÁY
 
+  // ... (Phần code logic phía trên giữ nguyên không đổi)
+
   return (
-    <div className="relative w-[320px] h-[240px] bg-black rounded-lg overflow-hidden border-2 border-gray-700">
+    // THAY ĐỔI LỚN Ở DÒNG CLASSNAME NÀY:
+    <div className="
+      relative 
+      overflow-hidden rounded-lg border-2 border-gray-700 bg-black shadow-lg
+      
+      /* --- GIAO DIỆN MOBILE (Mặc định) --- */
+      /* Nằm đè lên góc phải (Floating), kích thước nhỏ */
+      absolute top-4 right-4 z-50
+      w-[100px] h-[75px]
+      
+      /* --- GIAO DIỆN PC/TABLET (Màn hình > 768px) --- */
+      /* Quay về nằm yên (static), kích thước to rõ ràng */
+      md:static md:w-[320px] md:h-[240px]
+    ">
         <Script src="https://cdn.jsdelivr.net/npm/@mediapipe/pose/pose.js" strategy="afterInteractive" />
         <Script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" strategy="afterInteractive" onLoad={() => setIsModelLoaded(true)} />
         
-        {!isModelLoaded && <div className="absolute inset-0 flex items-center justify-center text-white text-xs">Đang tải AI...</div>}
+        {!isModelLoaded && <div className="absolute inset-0 flex items-center justify-center text-white text-[10px] md:text-xs">Loading...</div>}
         
-        {/* Webcam để mờ mờ cho dễ nhìn vạch */}
-        <Webcam ref={webcamRef} className="absolute inset-0 w-full h-full opacity-60" mirrored={true} />
-        <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" />
+        <Webcam ref={webcamRef} className="absolute inset-0 w-full h-full opacity-60 object-cover" mirrored={true} />
+        <canvas ref={canvasRef} className="absolute inset-0 w-full h-full object-cover" />
         
-        <div className="absolute bottom-2 left-2 text-white text-xs font-bold bg-black/50 p-1 rounded">
-            TRẠNG THÁI: {debugStatus}
+        {/* Chữ trạng thái cũng cần nhỏ lại trên mobile */}
+        <div className="absolute bottom-1 left-1 md:bottom-2 md:left-2 text-white text-[8px] md:text-xs font-bold bg-black/50 p-0.5 md:p-1 rounded">
+            {debugStatus}
         </div>
     </div>
   );
